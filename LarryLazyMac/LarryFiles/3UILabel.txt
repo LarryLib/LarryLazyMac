@@ -1,0 +1,18 @@
+@property (nonatomic,strong) UILabel * nameLabel;
+- (UILabel *)nameLabel{                                 
+if (!_nameLabel) {                                      
+_nameLabel = [UILabel new];                         
+_nameLabel.backgroundColor = [UIColor hexStringToColor:@""#666666""];
+_nameLabel.font = [UIFont systemFontOfSize:17];                 
+_nameLabel.numberOfLines = 1;                                   
+_nameLabel.textAlignment = 1;                                   
+_nameLabel.textColor = [UIColor hexStringToColor:@""#666666""]; 
+[self.contentView addSubview:_nameLabel];                       
+[_nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {   
+make.top.mas_equalTo(0);    
+make.left.mas_equalTo(0);   
+make.right.mas_equalTo(0);  
+make.bottom.mas_equalTo(0); 
+}]; 
+}       
+return _nameLabel;

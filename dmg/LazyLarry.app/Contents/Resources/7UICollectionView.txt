@@ -1,0 +1,66 @@
+
+<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@property (nonatomic,copy) NSMutableArray <ClassListModel *>* dataSourceArrM;
+@property (strong, nonatomic) UICollectionView * collectionView;
+@property (strong, nonatomic)UICollectionViewFlowLayout *layout;
+@property (nonatomic,assign)NSInteger currentPage;
+
+
+- (void)setUI{
+
+self.automaticallyAdjustsScrollViewInsets = NO;
+self.view.backgroundColor = [UIColor colorWithHexString:@""ebebeb""];
+
+UICollectionViewFlowLayout * layout=[[UICollectionViewFlowLayout alloc] init];
+layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+layout.itemSize = CGSizeMake((SCREEN_WIDTH - 5)/2,155);
+layout.minimumInteritemSpacing = 3;
+self.layout = layout;
+
+//collection
+_collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.layout];
+_collectionView.delegate = self;
+_collectionView.dataSource = self;
+_collectionView.backgroundColor = [UIColor hexStringToColor:@""#ebebeb""];
+_collectionView.showsHorizontalScrollIndicator = NO;
+_collectionView.showsVerticalScrollIndicator = YES;
+[_collectionView registerClass:[ClassListCell class] forCellWithReuseIdentifier:NSStringFromClass([ClassListCell class])];
+[self.view addSubview:_collectionView];
+[_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+make.left.right.top.mas_equalTo(0);
+make.bottom.mas_equalTo(-49);
+}];
+_collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+self.currentPage = 1;
+[self requestData];
+}];
+_collectionView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+self.currentPage++;
+[self requestData];
+}];
+}
+#pragma mark UICollectionViewDataSource,UICollectionViewDelegate
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+return self.dataSourceArrM.count;
+}
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+ClassListCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([ClassListCell class]) forIndexPath:indexPath];
+if (self.dataSourceArrM.count>indexPath.row) {
+ClassListModel * mod = self.dataSourceArrM[indexPath.row];
+[cell setCellWithModel:mod];
+}
+return cell;
+}
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+if (self.dataSourceArrM.count>indexPath.row) {
+//        ClassListModel * mod = self.dataSourceArrM[indexPath.row];
+}
+}
+
+#pragma 懒加载
+-(NSMutableArray *)dataSourceArrM{
+if (!_dataSourceArrM) {
+_dataSourceArrM = [NSMutableArray array];
+}
+return _dataSourceArrM;
+}

@@ -1,0 +1,18 @@
+@property (nonatomic,strong) UIButton * btn;
+-(UIButton *)btn{
+if (!_btn) {
+_btn = [UIButton buttonWithType:UIButtonTypeCustom];
+_btn.layer.masksToBounds = YES;
+_btn.layer.cornerRadius = 4.0f;
+[_btn removeAllTargets];
+[_btn addTarget:self action:@selector(clickbBtn) forControlEvents:UIControlEventTouchUpInside];
+[self.contentView addSubview:_btn];
+[_btn mas_makeConstraints:^(MASConstraintMaker *make) {
+make.top.mas_equalTo(0);
+make.left.mas_equalTo(0);
+make.right.mas_equalTo(0);
+make.bottom.mas_equalTo(0);
+}];
+}
+return _btn;
+}

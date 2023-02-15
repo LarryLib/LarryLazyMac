@@ -1,0 +1,45 @@
+
+#pragma 懒加载
+-(NSMutableArray *)dataSourceArrM{
+if (!_dataSourceArrM) {
+_dataSourceArrM = [NSMutableArray array];
+}
+return _dataSourceArrM;
+}
+#pragma Mark 请求课程列表数据
+-(void)requestData{
+
+[SVProgressHUD showWithStatus:@""加载中""];
+NSString *urlStr = [NSString stringWithFormat:@""%@cseCourse/findCourseList.html"",ftpPath];
+[SPHttpWithYYCache postRequestUrlStr:urlStr withDic:@{@""currentPage"":[NSString stringWithFormat:@""%ld"",self.currentPage]} success:^(NSDictionary *requestDic, NSString *msg) {
+
+[SVProgressHUD dismiss];
+int status = [requestDic[@""status""] intValue];
+if(status==1){
+
+NSArray * arr = [ClassListModel mj_objectArrayWithKeyValuesArray:requestDic[@""data""]];
+
+if (self.currentPage==1) {
+[self.dataSourceArrM removeAllObjects];
+[self.dataSourceArrM addObjectsFromArray:arr];
+[self.collectionView.mj_header endRefreshing];
+}else{
+if (arr.count>0) {
+[self.dataSourceArrM addObjectsFromArray:arr];
+[self.collectionView.mj_header endRefreshing];
+}else{
+[self.collectionView.mj_footer endRefreshingWithNoMoreData];
+}
+}
+[self.collectionView reloadData];
+}else{
+[SVProgressHUD showInfoWithStatus:msg];
+}
+
+} failure:^(NSString *errorInfo) {
+[self.collectionView.mj_header endRefreshing];
+[self.collectionView.mj_footer endRefreshing];
+[SVProgressHUD dismiss];
+[SVProgressHUD showInfoWithStatus:errorInfo];
+}];
+}

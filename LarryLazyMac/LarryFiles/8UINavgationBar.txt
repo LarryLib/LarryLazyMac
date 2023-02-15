@@ -1,0 +1,29 @@
+
+- (void)setNav{
+self.navigationItem.title = @""咨询"";
+
+UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+leftButton.frame = CGRectMake(0, 0, 68, 15);
+[leftButton setTitle:@""问卷调查"" forState:UIControlStateNormal];
+leftButton.titleLabel.font = [UIFont systemFontOfSize:15];
+[leftButton addTarget:self action:@selector(LeftBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+self.navigationItem.leftBarButtonItem = leftBarButton;
+
+UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+rightButton.frame = CGRectMake(0, 0, 14, 14);
+[rightButton setImage:[UIImage imageNamed:@""search-""] forState:UIControlStateNormal];
+[rightButton addTarget:self action:@selector(RightBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+[rightButton setEnlargeEdgeWithTop:5 right:5 bottom:5 left:5];
+UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+self.navigationItem.rightBarButtonItem = rightBarButton;
+
+}
+-(void)LeftBtnClick:(UIButton *)buttonItem{
+QuestionnaireDetailVC * vc = [QuestionnaireDetailVC new];
+[self.navigationController pushViewController:vc animated:YES];
+}
+-(void)RightBtnClick:(UIButton *)buttonItem{
+SearchAcitivityVC * vc = [SearchAcitivityVC new];
+[self.navigationController pushViewController:vc animated:YES];
+}

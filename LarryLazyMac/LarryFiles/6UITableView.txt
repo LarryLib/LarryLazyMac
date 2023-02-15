@@ -1,0 +1,91 @@
+
+<UITableViewDelegate,UITableViewDataSource,TitleButtonNoDataViewDelegate>
+
+@property (weak, nonatomic) UITableView *tableView;
+@property (nonatomic,copy) NSMutableArray <ProjectListModel *>* dataSourceArrM;
+@property (nonatomic,assign)NSInteger currentPage;
+
+-(void)setUI{
+
+self.automaticallyAdjustsScrollViewInsets = NO;
+self.view.backgroundColor = [UIColor hexStringToColor:@""#ebebeb""];
+
+//tableView
+UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+tableView.dataSource = self;
+tableView.delegate = self;
+tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+tableView.backgroundColor = [UIColor colorWithHexString:@""#f3f3f3""];
+tableView.showsVerticalScrollIndicator = NO;
+[self.view addSubview:tableView];
+self.tableView = tableView;
+[tableView registerClass:[ProjectListCell class] forCellReuseIdentifier:NSStringFromClass([ProjectListCell class])];
+[tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+make.top.left.mas_equalTo(0);
+make.width.mas_equalTo(self.view.mas_width);
+make.bottom.mas_equalTo(-49);
+}];
+tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+self.currentPage = 1;
+[self requestData];
+}];
+tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+self.currentPage++;
+[self requestData];
+}];
+}
+
+#pragma mark - UITableViewDataSource Delegate
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
+return 160;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+return 0.01;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+return 0.01;
+}
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+return 1;
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+return self.dataSourceArrM.count;
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+ProjectListCell *cell=[tableView dequeueReusableCellWithIdentifier:NSStringFromClass([ProjectListCell class])];
+cell.selectionStyle = UITableViewCellSelectionStyleNone;
+if (self.dataSourceArrM.count>indexPath.row) {
+ProjectListModel * mod = self.dataSourceArrM[indexPath.row];
+[cell setCellWithModel:mod];
+}
+return cell;
+}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+[tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+if (self.dataSourceArrM.count>indexPath.row) {
+UIViewController * vc;
+ProjectListModel * mod = self.dataSourceArrM[indexPath.row];
+if (self.type==0) {
+vc = [ProjectDetailedOneVC new];
+((ProjectDetailedOneVC *)vc).projectid = mod.projectid;
+((ProjectDetailedOneVC *)vc).projectName = mod.projectname;
+}else if (self.type==1){
+vc = [ProjectDetailedTwoVC new];
+((ProjectDetailedTwoVC *)vc).projectid = mod.projectid;
+}else{
+vc = [ProjectDetailedTwoVC new];
+((ProjectDetailedTwoVC *)vc).projectid = mod.projectid;
+((ProjectDetailedTwoVC *)vc).type = 1;//已完成
+}
+[self.navigationController pushViewController:vc animated:YES];
+}
+
+}
+#pragma 懒加载
+-(NSMutableArray *)dataSourceArrM{
+if (!_dataSourceArrM) {
+_dataSourceArrM = [NSMutableArray array];
+}
+return _dataSourceArrM;
+}
